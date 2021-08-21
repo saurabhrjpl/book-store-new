@@ -15,7 +15,7 @@ public class BookController {
     @Autowired
     private BookService bookservice;
 
-    @PostMapping(value = {"/", ""})
+    @PostMapping
     public ResponseEntity<Response> createBook(@RequestBody BookDTO bookDTO) {
         bookservice.createBookEntry(bookDTO);
         return new ResponseEntity<Response>(
@@ -23,10 +23,16 @@ public class BookController {
     }
 
 
-    @GetMapping({"/",""})
-    public ResponseEntity<Response> returnBook() {
-        return new ResponseEntity<Response>(new Response(200, "Fetched Successfully", bookservice.getBooks()), HttpStatus.ACCEPTED);
+    @GetMapping("/{pageNumber}/{pageSize}")
+    public ResponseEntity<Response> returnBook(@PathVariable("pageNumber") Integer pageNumber, @PathVariable ("pageSize") Integer pageSize) {
+        return new ResponseEntity<Response>(new Response(200, "Fetched Successfully", bookservice.getBooks(pageNumber,pageSize)), HttpStatus.ACCEPTED);
 
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> deleteBookByID(@PathVariable("id") Long id) {
+        bookservice.deleteEntry(id);
+        return new ResponseEntity<Response>(new Response(200, "Deleted Successfully", ""), HttpStatus.OK);
     }
 
 
